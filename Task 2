@@ -1,0 +1,55 @@
+import javax.swing.JOptionPane;
+
+public class GradeCalculator {
+    public static void main(String[] args) {
+        // Define the number of subjects
+        int numberOfSubjects = Integer.parseInt(JOptionPane.showInputDialog("Enter the number of subjects:"));
+
+        // Initialize variables for total marks
+        int totalMarks = 0;
+
+        // Loop to input marks for each subject
+        for (int i = 1; i <= numberOfSubjects; i++) {
+            int marks;
+            while (true) {
+                try {
+                    // Input marks for each subject
+                    marks = Integer.parseInt(JOptionPane.showInputDialog("Enter marks for subject " + i + " (out of 100):"));
+                    if (marks < 0 || marks > 100) {
+                        throw new NumberFormatException(); // Throw exception if marks are out of range
+                    }
+                    break;  // Exit the loop if valid marks are entered
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(null, "Invalid input! Please enter a number between 0 and 100.");
+                }
+            }
+            totalMarks += marks;  // Add the marks to total
+        }
+
+        // Calculate average percentage
+        double averagePercentage = (double) totalMarks / numberOfSubjects;
+
+        // Determine the grade based on average percentage
+        String grade;
+        if (averagePercentage >= 90) {
+            grade = "A+";
+        } else if (averagePercentage >= 80) {
+            grade = "A";
+        } else if (averagePercentage >= 70) {
+            grade = "B+";
+        } else if (averagePercentage >= 60) {
+            grade = "B";
+        } else if (averagePercentage >= 50) {
+            grade = "C+";
+        } else if (averagePercentage >= 40) {
+            grade = "C";
+        } else {
+            grade = "F";
+        }
+
+        // Display the results to the user
+        JOptionPane.showMessageDialog(null, "Total Marks: " + totalMarks + "\n" +
+                                          "Average Percentage: " + String.format("%.2f", averagePercentage) + "%\n" +
+                                          "Grade: " + grade);
+    }
+}
