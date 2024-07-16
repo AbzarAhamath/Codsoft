@@ -1,0 +1,102 @@
+XML 
+<dependencies>
+    <dependency>
+        <groupId>org.json</groupId>
+        <artifactId>json</artifactId>
+        <version>20220320</version>
+    </dependency>
+</dependencies>
+
+
+JAVA :
+
+import org.json.JSONObject;
+import org.json.JSONException;
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import javax.swing.JOptionPane;
+
+public class CurrencyConverter {
+    private static final String API_URL = "https://api.exchangerate-api.com/v4/latest/";
+
+    public static void main(String[] args) {
+        // Create an instance of HttpClient
+        HttpClient client = HttpClient.newHttpClient();
+
+        // Get base currency from the user
+        String[] currencies = {"USD", "EUR", "JPY", "GBP", "AUD", "CAD", "CHF", "CNY", "SEK", "NZD"};
+        String baseCurrency = (String) JOptionPane.showInputDialog(null, "Select the base currency:",
+                "Currency Converter", JOptionPane.QUESTION_MESSAGE, null, currencies, currencies[0]);
+
+        if (baseCurrency == null) {
+            JOptionPane.showMessageDialog(null, "No currency selected. Exiting.");
+            return;
+        }
+
+        // Fetch exchange rates
+        String url = API_URL + baseCurrency;
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).build();
+        HttpResponse<String> response;
+
+        try {
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (IOException | InterruptedException e) {
+            JOptionPane.showMessageDialog(null, "Failed to fetch exchange rates.");
+            return;
+        }
+
+        // Parse the JSON response
+        JSONObject jsonResponse;
+        try {
+            jsonResponse = new JSONObject(response.body());
+        } catch (JSONException e) {
+            JOptionPane.showMessageDialog(null, "Failed to parse exchange rates.");
+            return;
+        }
+
+        JSONObject rates = jsonResponse.getJSONObject("rates");
+
+        // Get target currency from the user
+        String targetCurrency = (String) JOptionPane.showInputDialog(null, "Select the target currency:",
+                "Currency Converter", JOptionPane.QUESTION_MESSAGE, null, rates.keySet().toArray(), rates.keySet().toArray()[0]);
+
+        if (targetCurrency == null || targetCurrency.equals(baseCurrency)) {
+            JOptionPane.showMessageDialog(null, "Invalid target currency selected. Exiting.");
+            return;
+        }
+
+        // Get amount from the user
+        double amount;
+        while (true) {
+            String amountInput = JOptionPane.showInputDialog("Enter the amount to convert from " + baseCurrency + ":");
+            try {
+                amount = Double.parseDouble(amountInput);
+                if (amount < 0) {
+                    throw new NumberFormatException();
+                }
+                break;
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, "Invalid amount! Please enter a positive number.");
+            }
+        }
+
+        // Perform currency conversion
+        double baseToTargetRate = rates.getDouble(targetCurrency);
+        double convertedAmount = amount * baseToTargetRate;
+
+        // Display the result
+        JOptionPane.showMessageDialog(null, String.format("Converted Amount: %.2f %s", convertedAmount, targetCurrency));
+    }
+}
+
+JAVA 2 :
+private static final String API_URL = "https://api.apilayer.com/exchangerates_data/latest?base=";
+private static final String API_KEY = "YOUR_API_KEY"; // Replace with your actual API key
+
+HttpRequest request = HttpRequest.newBuilder()
+        .uri(URI.create(API_URL + baseCurrency))
+        .header("apikey", API_KEY)
+        .build();
