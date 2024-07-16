@@ -1,0 +1,50 @@
+import javax.swing.JOptionPane;
+import java.util.Random;
+
+public class NumberGuessingGameGUI {
+    public static void main(String[] args) {
+        // Define the range and the maximum number of attempts
+        int min = 1;
+        int max = 100;
+        int maxAttempts = 5; // Set the maximum number of attempts
+
+        // Create an instance of Random class
+        Random random = new Random();
+
+        // Generate a random number in the range [min, max]
+        int randomNumber = random.nextInt((max - min) + 1) + min;
+
+        int userGuess = -1;  // Initialize with a value not in the range
+        int attempts = 0;   // Initialize the number of attempts
+
+        // Repeat the process until the user guesses the correct number or runs out of attempts
+        while (userGuess != randomNumber && attempts < maxAttempts) {
+            // Prompt the user to enter their guess using JOptionPane
+            String userInput = JOptionPane.showInputDialog(null, "Guess a number between " + min + " and " + max + ":");
+
+            // Convert the user input to an integer
+            try {
+                userGuess = Integer.parseInt(userInput);
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, "Invalid input! Please enter a number.");
+                continue;  // Skip the rest of the loop and prompt again
+            }
+
+            attempts++;  // Increment the attempt counter
+
+            // Provide feedback on whether the guess is correct, too high, or too low
+            if (userGuess < randomNumber) {
+                JOptionPane.showMessageDialog(null, "Too low! Try again.");
+            } else if (userGuess > randomNumber) {
+                JOptionPane.showMessageDialog(null, "Too high! Try again.");
+            } else {
+                JOptionPane.showMessageDialog(null, "Congratulations! You guessed the correct number: " + randomNumber);
+            }
+        }
+
+        // Check if the user has used all their attempts
+        if (userGuess != randomNumber) {
+            JOptionPane.showMessageDialog(null, "Sorry, you've used all your attempts. The correct number was " + randomNumber + ".");
+        }
+    }
+}
