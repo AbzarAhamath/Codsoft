@@ -1,0 +1,70 @@
+import javax.swing.JOptionPane;
+import java.util.Random;
+
+public class NumberGuessingGameGUI {
+    public static void main(String[] args) {
+        final int min = 1;
+        final int max = 100;
+        final int maxAttempts = 5;
+
+        // Create an instance of Random class
+        Random random = new Random();
+
+        int totalScore = 0;  // Initialize total score
+        boolean playAgain;
+
+        do {
+            // Generate a random number in the range [min, max]
+            int randomNumber = random.nextInt((max - min) + 1) + min;
+            int userGuess = -1;  // Initialize with a value not in the range
+            int attempts = 0;   // Initialize the number of attempts
+            boolean guessedCorrectly = false;  // Flag to check if the user guessed correctly
+
+            // Repeat the process until the user guesses the correct number or runs out of attempts
+            while (userGuess != randomNumber && attempts < maxAttempts) {
+                // Prompt the user to enter their guess using JOptionPane
+                String userInput = JOptionPane.showInputDialog(null, "Guess a number between " + min + " and " + max + ":");
+
+                // Convert the user input to an integer
+                try {
+                    userGuess = Integer.parseInt(userInput);
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(null, "Invalid input! Please enter a number.");
+                    continue;  // Skip the rest of the loop and prompt again
+                }
+
+                attempts++;  // Increment the attempt counter
+
+                // Provide feedback on whether the guess is correct, too high, or too low
+                if (userGuess < randomNumber) {
+                    JOptionPane.showMessageDialog(null, "Too low! Try again.");
+                } else if (userGuess > randomNumber) {
+                    JOptionPane.showMessageDialog(null, "Too high! Try again.");
+                } else {
+                    guessedCorrectly = true;
+                    JOptionPane.showMessageDialog(null, "Congratulations! You guessed the correct number: " + randomNumber);
+                }
+            }
+
+            // Check if the user has used all their attempts
+            if (!guessedCorrectly) {
+                JOptionPane.showMessageDialog(null, "Sorry, you've used all your attempts. The correct number was " + randomNumber + ".");
+            }
+
+            // Calculate score based on the number of attempts
+            int score = Math.max(0, maxAttempts - attempts + 1);  // Score decreases with more attempts
+            totalScore += score;  // Add round score to total score
+
+            // Show the current score for the round
+            JOptionPane.showMessageDialog(null, "Your score for this round is: " + score);
+
+            // Ask the user if they want to play again
+            int response = JOptionPane.showConfirmDialog(null, "Do you want to play again?", "Play Again", JOptionPane.YES_NO_OPTION);
+            playAgain = (response == JOptionPane.YES_OPTION);
+
+        } while (playAgain);  // Repeat the game if the user chooses to play again
+
+        // Inform the user that the game is over and show the total score
+        JOptionPane.showMessageDialog(null, "Thank you for playing! Your total score is: " + totalScore);
+    }
+}
